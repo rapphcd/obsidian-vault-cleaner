@@ -1,10 +1,12 @@
 import { Plugin } from 'obsidian';
-
+import {DEFAULT_SETTINGS, PluginSettings, SettingTab} from "./settings";
 
 export default class CleanupPlugin extends Plugin {
+	settings: PluginSettings;
 	cleanedFiles = 0;
 
 	async onload() {
+		await this.loadSettings();
 
 		let ribbonIcon = this.addRibbonIcon("trash", "Clean medias", (e: MouseEvent) => {
 			this.clickOnRibbon(e, ribbonIcon)
@@ -18,12 +20,34 @@ export default class CleanupPlugin extends Plugin {
 			}
 		}))
 
+		this.registerEvent(this.app.workspace.on('active-leaf-change', () => {
+			if (!ribbonIcon.isShown()) {
+				ribbonIcon = this.addRibbonIcon("trash", "Clean medias", (e: MouseEvent) => {
+					this.clickOnRibbon(e, ribbonIcon)
+				})
+			}
+		}))
+
+		
+		this.addSettingTab(new SettingTab(this.app, this));
 	}
 
-	clickOnRibbon(e: MouseEvent, icon: HTMLElement) {
-		const statusElement = this.addStatusBarItem().createEl("span")
+	async loadSettings() {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<PluginSettings>);
+	}
 
-		this.cleanMediaFiles()
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
+
+	async clickOnRibbon(e: MouseEvent, icon: HTMLElement) {
+		const statusElement = this.addStatusBarItem().createEl("span")
+		this.cleanedFiles = 0;
+
+		await this.cleanMediaFiles()
+		if(this.settings.removeUntitled){
+			await this.cleanUntitled()
+		}
 		statusElement.setText(this.cleanedFiles.toString() + " File Cleaned")
 
 		icon.detach()
@@ -34,13 +58,47 @@ export default class CleanupPlugin extends Plugin {
 	}
 
 
-	cleanMediaFiles() {
-		this.cleanedFiles = 0
-		const filesList = this.app.vault.getFiles();
-		for (const file of filesList) {
-			if (file.extension != "md") {
+	async cleanMediaFiles() {
+		const markdownFiles = this.app.vault.getMarkdownFiles();
+
+		const mediasFiles: (string | undefined)[] = [];
+
+		for (const file of markdownFiles) {
+			await this.app.vault.read(file).then((c) => {
+				const rgex: RegExp = /!\[\[([^\]]+)\]\]/g;
+				let found = [...c.matchAll(rgex)];
+				if (found) {
+					found.map(m => {
+						if (!mediasFiles.contains(m[1])) {
+							mediasFiles.push(m[1])
+						}
+					})
+				}
+			})
+		}
+
+		const allfiles = this.app.vault.getFiles();
+		
+		for (const file of allfiles) {
+
+			if (file.extension != "md" && !mediasFiles.contains(file.name)) {
 				this.cleanedFiles += 1;
-				//clean
+				await this.app.fileManager.trashFile(file);
+			}
+		}
+	}
+
+	async cleanUntitled(){
+		const markdownFiles = this.app.vault.getMarkdownFiles();
+
+		for (const file of markdownFiles) {
+			const fname = file.basename;
+			const rg = /^Untitled(?: (?:[1-9][0-9]?[0-9]?[0-9]?))?$/;
+			const untitled = rg.test(fname);
+			
+			if(untitled){
+				this.cleanedFiles += 1;
+				await this.app.fileManager.trashFile(file);
 			}
 		}
 	}
