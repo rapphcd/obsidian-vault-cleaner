@@ -25,7 +25,7 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Remove Untitled')
+			.setName('Remove untitled')
 			.setDesc('Removes utitled leafs.')
 			.addToggle(toggle => toggle
                 .setValue(this.plugin.settings.removeUntitled)
@@ -36,7 +36,7 @@ export class SettingTab extends PluginSettingTab {
             )
 
         new Setting(containerEl)
-			.setName('Remove Doubles')
+			.setName('Remove doubles')
 			.setDesc('Removes double leafs.')
 			.addToggle(toggle => toggle
                 .setValue(this.plugin.settings.removeDoubles)

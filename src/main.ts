@@ -8,22 +8,22 @@ export default class CleanupPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		let ribbonIcon = this.addRibbonIcon("trash", "Clean medias", (e: MouseEvent) => {
-			this.clickOnRibbon(e, ribbonIcon)
+		let ribbonIcon = this.addRibbonIcon("trash", "Clean medias", async (e: MouseEvent) => {
+			await this.clickOnRibbon(e, ribbonIcon)
 		})
 
 		this.registerEvent(this.app.vault.on('create', () => {
 			if (!ribbonIcon.isShown()) {
-				ribbonIcon = this.addRibbonIcon("trash", "Clean medias", (e: MouseEvent) => {
-					this.clickOnRibbon(e, ribbonIcon)
+				ribbonIcon = this.addRibbonIcon("trash", "Clean medias", async (e: MouseEvent) => {
+					await this.clickOnRibbon(e, ribbonIcon)
 				})
 			}
 		}))
 
 		this.registerEvent(this.app.workspace.on('active-leaf-change', () => {
 			if (!ribbonIcon.isShown()) {
-				ribbonIcon = this.addRibbonIcon("trash", "Clean medias", (e: MouseEvent) => {
-					this.clickOnRibbon(e, ribbonIcon)
+				ribbonIcon = this.addRibbonIcon("trash", "Clean medias", async (e: MouseEvent) => {
+					await this.clickOnRibbon(e, ribbonIcon)
 				})
 			}
 		}))
