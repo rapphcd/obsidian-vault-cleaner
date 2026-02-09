@@ -1,5 +1,5 @@
-import { Plugin } from 'obsidian';
-import {DEFAULT_SETTINGS, PluginSettings, SettingTab} from "./settings";
+import { Plugin, TFile } from 'obsidian';
+import { DEFAULT_SETTINGS, PluginSettings, SettingTab } from "./settings";
 
 export default class CleanupPlugin extends Plugin {
 	settings: PluginSettings;
@@ -28,7 +28,7 @@ export default class CleanupPlugin extends Plugin {
 			}
 		}))
 
-		
+
 		this.addSettingTab(new SettingTab(this.app, this));
 	}
 
@@ -45,8 +45,11 @@ export default class CleanupPlugin extends Plugin {
 		this.cleanedFiles = 0;
 
 		await this.cleanMediaFiles()
-		if(this.settings.removeUntitled){
+		if (this.settings.removeUntitled) {
 			await this.cleanUntitled()
+		}
+		if(this.settings.removeDoubles){
+			await this.cleanDoubles()
 		}
 		statusElement.setText(this.cleanedFiles.toString() + " File Cleaned")
 
@@ -78,7 +81,7 @@ export default class CleanupPlugin extends Plugin {
 		}
 
 		const allfiles = this.app.vault.getFiles();
-		
+
 		for (const file of allfiles) {
 
 			if (file.extension != "md" && !mediasFiles.contains(file.name)) {
@@ -88,17 +91,58 @@ export default class CleanupPlugin extends Plugin {
 		}
 	}
 
-	async cleanUntitled(){
+	async cleanUntitled() {
 		const markdownFiles = this.app.vault.getMarkdownFiles();
 
 		for (const file of markdownFiles) {
 			const fname = file.basename;
 			const rg = /^Untitled(?: (?:[1-9][0-9]?[0-9]?[0-9]?))?$/;
 			const untitled = rg.test(fname);
-			
-			if(untitled){
+
+			if (untitled) {
+				if (this.settings.excludeNonEmpty) {
+					await this.app.vault.read(file).then(async (c) => {
+						if (c === "") {
+							this.cleanedFiles += 1;
+							await this.app.fileManager.trashFile(file);
+						}
+					})
+				} else {
+					this.cleanedFiles += 1;
+					await this.app.fileManager.trashFile(file);
+				}
+			}
+		}
+	}
+
+	async cleanDoubles(){
+		const markdownFiles = this.app.vault.getMarkdownFiles();
+
+		const filesList = new Map<string, TFile>();
+
+		for(const file of markdownFiles){
+			const rg = /\s\(\d+\)$/;
+			const basename = file.basename.replace(rg, "");
+
+			if(!filesList.has(basename)){
+				filesList.set(basename, file)
+			} else {
+				const stored = filesList.get(basename);
+
+				if(stored == undefined ) return;
+
+				let fileToDelete = stored;
+				let fileToKeep = file;
+
+				if(stored.stat.mtime > file.stat.mtime){
+					fileToDelete = file;
+					fileToKeep = stored;
+				}
+
+				filesList.set(basename, fileToKeep)
 				this.cleanedFiles += 1;
-				await this.app.fileManager.trashFile(file);
+
+				await this.app.fileManager.trashFile(fileToDelete);
 			}
 		}
 	}
