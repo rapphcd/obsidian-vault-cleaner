@@ -8,13 +8,13 @@ export default class CleanupPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		let ribbonIcon = this.addRibbonIcon("trash", "Clean medias", async (e: MouseEvent) => {
+		let ribbonIcon = this.addRibbonIcon("trash", "Clean vault", async (e: MouseEvent) => {
 			await this.clickOnRibbon(e, ribbonIcon)
 		})
 
 		this.registerEvent(this.app.vault.on('create', () => {
 			if (!ribbonIcon.isShown()) {
-				ribbonIcon = this.addRibbonIcon("trash", "Clean medias", async (e: MouseEvent) => {
+				ribbonIcon = this.addRibbonIcon("trash", "Clean vault", async (e: MouseEvent) => {
 					await this.clickOnRibbon(e, ribbonIcon)
 				})
 			}
@@ -22,7 +22,7 @@ export default class CleanupPlugin extends Plugin {
 
 		this.registerEvent(this.app.workspace.on('active-leaf-change', () => {
 			if (!ribbonIcon.isShown()) {
-				ribbonIcon = this.addRibbonIcon("trash", "Clean medias", async (e: MouseEvent) => {
+				ribbonIcon = this.addRibbonIcon("trash", "Clean vault", async (e: MouseEvent) => {
 					await this.clickOnRibbon(e, ribbonIcon)
 				})
 			}
@@ -51,7 +51,7 @@ export default class CleanupPlugin extends Plugin {
 		if(this.settings.removeDoubles){
 			await this.cleanDoubles()
 		}
-		statusElement.setText(this.cleanedFiles.toString() + " File Cleaned")
+		statusElement.setText(this.cleanedFiles <= 1 ? this.cleanedFiles.toString() + " File Cleaned" : this.cleanedFiles.toString() + " Files Cleaned")
 
 		icon.detach()
 

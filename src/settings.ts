@@ -28,7 +28,7 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Remove untitled')
-			.setDesc('Removes utitled leafs.')
+			.setDesc('Remove utitled leafs.')
 			.addToggle(toggle => toggle
                 .setValue(this.plugin.settings.removeUntitled)
                 .onChange( async (val) => {
@@ -53,7 +53,7 @@ export class SettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
 			.setName('Remove doubles')
-			.setDesc('Removes double leafs.')
+			.setDesc('Removes duplicated leafs from the vault.')
 			.addToggle(toggle => toggle
                 .setValue(this.plugin.settings.removeDoubles)
                 .onChange( async (val) => {
