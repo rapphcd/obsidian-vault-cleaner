@@ -1,7 +1,7 @@
 {
 	"id": "cleanup-plugin",
 	"name": "Cleanup Plugin",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
 	"description": "Cleanup unused medias, untitled and duplicated leafs.",
 	"author": "rapphcd",
