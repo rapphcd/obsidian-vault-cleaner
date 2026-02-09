@@ -1,4 +1,4 @@
-# Cleanup Plugin
+# Vault Cleaner
 
 Clean your obsidian vault with a simple click on the icon in the ribbon menu.
 
