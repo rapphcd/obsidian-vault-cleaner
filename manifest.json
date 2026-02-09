@@ -3,7 +3,7 @@
 	"name": "Cleanup Plugin",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Cleanup unused medias.",
+	"description": "Cleanup unused medias, untitled and duplicated leafs.",
 	"author": "rapphcd",
 	"authorUrl": "https://raphaelparmentier.fr",
 	"fundingUrl": "https://raphaelparmentier.fr",
