@@ -18,11 +18,17 @@ Clean your obsidian vault with a simple click on the icon in the ribbon menu.
 
 - Remove doubles (On/**Off**) : Enable duplicated files deletion.
 
+# Installation
+
+- Go in the release tab.
+- Download ``main.js`` and ``manifest.json``.
+- Go into the ``plugin`` folder of your vault.
+- Create a ``vault-cleaner`` folder.
+- Paste the ``main.js`` and ``manifest.json`` downloaded previously.
+- And you're done !
+ 
 # Usage
 
-- Enable the plugin
-- Click the trash icon in the ribbon menu
+- Enable the plugin in the Obsidian app settings.
+- Click the trash icon in the ribbon menu.
 - Enjoy your cleaned vault !
-
-
-
