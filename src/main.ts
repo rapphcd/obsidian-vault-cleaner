@@ -20,7 +20,7 @@ export default class CleanupPlugin extends Plugin {
 			}
 		}))
 
-		this.registerEvent(this.app.workspace.on('active-leaf-change', () => {
+		this.registerEvent(this.app.vault.on('modify', () => {
 			if (!ribbonIcon.isShown()) {
 				ribbonIcon = this.addRibbonIcon("trash", "Clean vault", async (e: MouseEvent) => {
 					await this.clickOnRibbon(e, ribbonIcon)
@@ -41,7 +41,7 @@ export default class CleanupPlugin extends Plugin {
 	}
 
 	async clickOnRibbon(e: MouseEvent, icon: HTMLElement) {
-		const statusElement = this.addStatusBarItem().createEl("span")
+		const statusElement = this.addStatusBarItem().createEl("span");
 		this.cleanedFiles = 0;
 
 		await this.cleanMediaFiles()
