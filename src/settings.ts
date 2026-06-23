@@ -1,6 +1,5 @@
 import {App, PluginSettingTab, Setting} from "obsidian";
 import CleanupPlugin  from "./main";
-import {node} from "globals";
 
 export interface PluginSettings {
 	removeUntitled: boolean;
