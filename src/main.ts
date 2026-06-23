@@ -83,8 +83,8 @@ export default class CleanupPlugin extends Plugin {
 		const allfiles = this.app.vault.getFiles();
 
 		for (const file of allfiles) {
-
 			if (file.extension != "md" && !mediasFiles.contains(file.name)) {
+				if(this.settings.ignoredExtensions.includes(file.extension)) return;
 				this.cleanedFiles += 1;
 				await this.app.fileManager.trashFile(file);
 			}
