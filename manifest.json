@@ -1,8 +1,8 @@
 {
 	"id": "vault-cleaner",
 	"name": "Vault Cleaner",
-	"version": "1.0.3",
-	"minAppVersion": "0.15.0",
+	"version": "1.0.4",
+	"minAppVersion": "1.6.6",
 	"description": "Clean unused medias, untitled and duplicated leafs.",
 	"author": "rapphcd",
 	"authorUrl": "https://raphaelparmentier.fr",
