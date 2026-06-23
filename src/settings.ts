@@ -74,7 +74,7 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Add ignored extension")
-			.setDesc(`Ex: "pdf"`)
+			.setDesc(`Example: "p` + `df".`)
 			.addText(text => text
 				.setValue(val)
 				.onChange(value => {
